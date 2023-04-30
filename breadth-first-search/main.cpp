@@ -1,6 +1,8 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <string>
+#include <queue>
 
 struct Node;
 
@@ -29,6 +31,40 @@ print_node(Node* node) {
 
   for (const auto& edge : node->edges) {
     std::cout << "   " << edge.node->name << " (" << edge.weight << ")" << '\n';
+  }
+}
+
+void
+breadth_first_search(Node* start_node, Node* goal_node) {
+  // Some data structures
+  std::vector<Node*> closed_list; // visited nodes
+  std::queue<Node*> open_list; // frontier
+
+  // Add the starting node to the queue and mark it as visited
+  open_list.push(start_node);
+  closed_list.push_back(start_node);
+
+  // Keep going until the queue is empty
+  while (!open_list.empty()) {
+    // Get the head of the queue
+    Node* queue_head = open_list.front();
+    open_list.pop();
+    std::cout << queue_head->name << std::endl;
+    
+    // If the head is the goal node, we can finish the search
+    if (queue_head == goal_node) {
+      return;
+    }
+
+    // Mark every neighbour as visited and add it to the queue
+    for (const auto& edge : queue_head->edges) {
+      if (std::find(closed_list.begin(), closed_list.end(), edge.node) != closed_list.end()) {
+        continue;
+      }
+
+      closed_list.push_back(edge.node);
+      open_list.push(edge.node);
+    }
   }
 }
 
@@ -68,7 +104,8 @@ main() {
   g->add_edge(bucharest, 101);
   d->add_edge(c, 151);
 
-  print_node(e);
+  // Employ breadth-first-search algorithm to find shortest path from ARAD to Bucharest
+  breadth_first_search(arad, bucharest);
 
   // Clean up everything
   delete arad;
