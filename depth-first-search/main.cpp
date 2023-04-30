@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <queue>
+#include <stack>
 
 struct Node;
 
@@ -35,29 +35,29 @@ print_node(Node* node) {
 }
 
 void
-breadth_first_search(Node* start_node, Node* goal_node) {
+depth_first_search(Node* start_node, Node* goal_node) {
   // Some data structures
   std::vector<Node*> closed_list; // visited nodes
-  std::queue<Node*> open_list; // frontier
+  std::stack<Node*> open_list; // frontier
 
-  // Add the starting node to the queue and mark it as visited
+  // Add the starting node to the stack and mark it as visited
   open_list.push(start_node);
   closed_list.push_back(start_node);
 
-  // Keep going until the queue is empty
+  // Keep going until the stack is empty
   while (!open_list.empty()) {
-    // Get the head of the queue
-    Node* queue_head = open_list.front();
+    // Get the head of the stack
+    Node* stack_head = open_list.top();
     open_list.pop();
-    std::cout << queue_head->name << std::endl;
+    std::cout << stack_head->name << std::endl;
     
     // If the head is the goal node, we can finish the search
-    if (queue_head == goal_node) {
+    if (stack_head == goal_node) {
       return;
     }
 
-    // Mark every neighbour as visited and add it to the queue
-    for (const auto& edge : queue_head->edges) {
+    // Mark every neighbour as visited and add it to the stack
+    for (const auto& edge : stack_head->edges) {
       if (std::find(closed_list.begin(), closed_list.end(), edge.node) != closed_list.end()) {
         continue;
       }
@@ -92,9 +92,8 @@ main() {
   a->add_edge(i, 111);
 
   i->add_edge(l, 70);
-  
+  b->add_edge(c, 71); 
   l->add_edge(m, 75);
-  b->add_edge(c, 71);
   m->add_edge(h, 120);
   h->add_edge(e, 146);
   h->add_edge(g, 138);
@@ -105,8 +104,8 @@ main() {
   g->add_edge(bucharest, 101);
   d->add_edge(c, 151);
 
-  // Employ breadth-first-search algorithm to find shortest path from ARAD to Bucharest
-  breadth_first_search(arad, bucharest);
+  // Employ depth-first-search algorithm to find shortest path from ARAD to Bucharest
+  depth_first_search(arad, bucharest);
 
   // Clean up everything
   delete arad;
